@@ -4,6 +4,10 @@
 
 This file is the entry point for any agent working in the repository. It routes you to the shared skills library and the repository's own setup.
 
+## Finish setting up this repository
+
+This repository was created from [flipbook-labs/repo-template](https://github.com/flipbook-labs/repo-template) and isn't fully set up yet. Before any other work, go through the checklist in [`README.md`](README.md) step by step. Some steps happen outside this repository, such as the pull request to infra, so the setup isn't done when this repository's own files are. The checklist's last step deletes this section. In repo-template itself, skip this section.
+
 ## Mandatory first steps
 
 Complete these steps before you write any code, tests, changelog entries, or PR prose.
