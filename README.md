@@ -38,6 +38,8 @@ For Roblox packages:
 
 The template follows the org's conventions in the `org/repo-conventions` skill. When an org-wide pass bumps toolchain pins or changes a convention in the other repositories, update the template in the same pass. Its CI runs the same `analyze`, `lint`, and `test` checks a new repository gets, so a broken scaffold fails here first.
 
+The template never releases, so its pull requests skip the changelog check and add no `.changes/` entries. `lute run check` stops at that step here, so run `lute run lint`, `lute run analyze`, and `lute test` instead.
+
 ## License
 
 MIT.
