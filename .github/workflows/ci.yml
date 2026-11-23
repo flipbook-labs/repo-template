@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: CompeyDev/setup-rokit@1d9390883f7ebce19d48f5b8d006e11d387c92ab # v0.2.1
+        with:
+          version: v1.2.0
+
+      - name: Setup Lute Typedefs
+        run: lute setup
+
+      - name: Install Dependencies
+        run: lute run install
+
+      - name: Analyze
+        run: lute run analyze
+
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: CompeyDev/setup-rokit@1d9390883f7ebce19d48f5b8d006e11d387c92ab # v0.2.1
+        with:
+          version: v1.2.0
+
+      - name: Install Dependencies
+        run: lute run install
+
+      - name: Lint
+        run: lute run lint
+
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: CompeyDev/setup-rokit@1d9390883f7ebce19d48f5b8d006e11d387c92ab # v0.2.1
+        with:
+          version: v1.2.0
+
+      - name: Install Dependencies
+        run: lute run install
+
+      - name: Test
+        run: lute test
+
+  changelog:
+    # This check skips pull requests to repo-template itself. The template never
+    # releases, so its changelog entries would never be cleared, and every new
+    # repository would start with them. In a repository created from the
+    # template, the name never matches and the check always runs.
+    if: github.event_name == 'pull_request' && github.repository != 'flipbook-labs/repo-template'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # `require-entry` diffs against the PR base branch, so a merge-base must
+          # exist. Full history guarantees it (the default depth-1 checkout does not).
+          fetch-depth: 0
+
+      - uses: flipbook-labs/changewrite@v0.15.0
+        with:
+          require-entry: "true"
