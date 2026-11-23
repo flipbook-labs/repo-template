@@ -35,6 +35,9 @@ jobs:
         with:
           version: v1.2.0
 
+      - name: Install Dependencies
+        run: lute run install
+
       - name: Lint
         run: lute run lint
 

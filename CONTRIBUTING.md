@@ -21,7 +21,7 @@ lute run check
 This runs the same checks as CI:
 
 - `changewrite check --fix` validates the changelog entries and rewrites any written for an older version of Changewrite.
-- `lute run lint` runs Selene and StyLua, and fails on any file that uses `.lua` instead of `.luau`.
+- `lute run lint` runs [CodeQuality](https://github.com/flipbook-labs/code-quality)'s shared lint rules and StyLua, and fails on any file that uses `.lua` instead of `.luau`.
 - `lute run analyze` type-checks the code with luau-lsp. `.config.luau` sets strict mode for every file.
 - `lute test` runs the `*.spec.luau` files next to the code they cover.
 

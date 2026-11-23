@@ -1,6 +1,6 @@
 # RepoTemplate
 
-The starting point for new flipbook-labs repositories. It holds what every repository shares: the Rokit toolchain, a Lute package manifest, `.lute/` scripts to install, lint, analyze, and check, CI and release workflows that follow the org's conventions, StyLua and Selene configs, a pull request template, an agent guide, and the MIT license.
+The starting point for new flipbook-labs repositories. It holds what every repository shares: the Rokit toolchain, a Lute package manifest, `.lute/` scripts to install, lint, analyze, and check, CI and release workflows that follow the org's conventions, shared lint rules from CodeQuality, a StyLua config, a pull request template, an agent guide, and the MIT license.
 
 The source is a small Luau package with one function and one test, so CI has real code to check from the first commit. Replace it with your own.
 
