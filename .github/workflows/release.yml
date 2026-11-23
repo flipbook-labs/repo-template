@@ -1,0 +1,54 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    # `labeled` starts a run as soon as someone adds the `debug:release-pr`
+    # label. On a pull request, the job only runs when that label is present,
+    # and it opens a `[DEBUG]` publish PR without releasing anything.
+    types: [opened, synchronize, reopened, labeled]
+  workflow_dispatch:
+    inputs:
+      force-version:
+        description: "Open a publish PR that sets this exact version (e.g. 1.2.3)"
+        default: ""
+        required: false
+
+jobs:
+  release:
+    # repo-template itself never releases, so this job skips there. In a
+    # repository created from the template, the name never matches, and the job
+    # runs as usual.
+    if: >-
+      github.repository != 'flipbook-labs/repo-template' &&
+      (github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'debug:release-pr'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: write
+    concurrency:
+      group: release-pr-${{ github.ref }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+    steps:
+      # A publish PR opened with the default GITHUB_TOKEN doesn't trigger CI,
+      # so Changewrite opens it as the Flipbook Backend App instead.
+      - name: Generate App Token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.FLIPBOOK_BACKEND_CLIENT_ID }}
+          private-key: ${{ secrets.FLIPBOOK_BACKEND_APP_PRIVATE_KEY }}
+
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || 'main' }}
+
+      - uses: flipbook-labs/changewrite@v0.15.0
+        with:
+          github-token: ${{ steps.app-token.outputs.token }}
+          debug: ${{ github.event_name == 'pull_request' }}
+          force-version: ${{ inputs.force-version || '' }}

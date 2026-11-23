@@ -1,0 +1,8 @@
+/build/
+
+# Dependencies vendored by `lute run install`
+/.lpm/
+
+# Packages leave the lockfile out. Apps and CLIs commit it so their builds are
+# reproducible.
+pkg.lock.luau

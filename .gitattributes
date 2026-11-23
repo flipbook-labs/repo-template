@@ -1,0 +1,4 @@
+# Apps and CLIs commit `pkg.lock.luau`, which `lute pkg install` writes.
+# Marking it generated collapses its diff in pull requests and leaves it out of
+# language stats.
+pkg.lock.luau linguist-generated=true
