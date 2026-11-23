@@ -22,8 +22,7 @@ For every repository:
 - [ ] Replace this README with the App, Package, or Tool template from the `org/write-readme` skill. `lute run install` vendors the skills into `.lpm/agent-skills@<rev>`.
 - [ ] Replace the comment at the top of `AGENTS.md` with a paragraph on what the repository is.
 - [ ] Register the repository in [infra](https://github.com/flipbook-labs/infra)'s GitHub stack with one pull request. Add a `main` ruleset to `stacks/github/rulesets.tf` that requires the `analyze`, `changelog`, `lint`, and `test` checks. Add the repository to `flipbook_backend_app_consumers` in `stacks/github/actions.tf`, so the Release workflow can read `FLIPBOOK_BACKEND_CLIENT_ID`. If `flipbook-admins` and `flipbook-engine` should have access, add it to `engine_repositories` in `stacks/github/access.tf` and to the list in the stack's README.
-- [ ] Grant the `FLIPBOOK_BACKEND_APP_PRIVATE_KEY` organization secret to the repository. The secret lives outside the infra stack, so this step is manual.
-- [ ] Add a `.changes/` entry to the first pull request. The version starts at `0.0.0`, so a `minor` entry makes the first release `0.1.0`.
+- [ ] Add a `.changes/` entry to the first pull request. The first release is `0.1.0`, whatever the entry's `bump`, because Changewrite releases an untagged version as it stands. Change the version in `pkg.luau` and `changewrite.luau` first if the repository should start somewhere else.
 
 For apps and CLIs:
 

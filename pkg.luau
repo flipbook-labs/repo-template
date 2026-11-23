@@ -1,7 +1,7 @@
 return {
 	package = {
 		name = "RepoTemplate",
-		version = "0.0.0",
+		version = "0.1.0",
 		files = {
 			"/init.luau",
 			"/src/**",
