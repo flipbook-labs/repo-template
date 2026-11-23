@@ -34,6 +34,10 @@ For Roblox packages:
 
 - [ ] Add Rojo and Wally to `rokit.toml`, a `wally.toml` that `changewrite.luau` mirrors the version into, and a Wally publish step to the Release workflow. [Storyteller](https://github.com/flipbook-labs/storyteller) has a working setup.
 
+Last:
+
+- [ ] Delete the "Finish setting up this repository" section from `AGENTS.md`. Agents read that file at the start of every session, and the section sends them here until the checklist is done.
+
 ## Keep the template current
 
 The template follows the org's conventions in the `org/repo-conventions` skill. When an org-wide pass bumps toolchain pins or changes a convention in the other repositories, update the template in the same pass. Its CI runs the same `analyze`, `lint`, and `test` checks a new repository gets, so a broken scaffold fails here first.
