@@ -47,7 +47,7 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
           ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || 'main' }}
 
-      - uses: flipbook-labs/changewrite@v0.15.0
+      - uses: flipbook-labs/changewrite@v0.16.0
         with:
           github-token: ${{ steps.app-token.outputs.token }}
           debug: ${{ github.event_name == 'pull_request' }}

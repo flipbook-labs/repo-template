@@ -72,6 +72,6 @@ jobs:
           # exist. Full history guarantees it (the default depth-1 checkout does not).
           fetch-depth: 0
 
-      - uses: flipbook-labs/changewrite@v0.15.0
+      - uses: flipbook-labs/changewrite@v0.16.0
         with:
           require-entry: "true"
