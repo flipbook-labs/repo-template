@@ -4,6 +4,8 @@ This folder holds the unreleased changes for the next release. Each file describ
 
 ## Adding an entry
 
+Each pull request adds one entry. `changewrite check` fails a branch that adds more, and `maxEntriesPerPullRequest` in [`changewrite.luau`](../changewrite.luau) changes the limit.
+
 Create a Luau file in this folder that returns the entry's fields. Name the file after the change, such as `fix-release-permissions.luau`. The name only makes entries easier to browse.
 
 ```luau
