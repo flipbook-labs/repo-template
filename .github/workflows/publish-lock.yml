@@ -1,0 +1,26 @@
+name: Publish Lock
+
+# `publish-lock` is a commit status the Release workflow fails on the publish PR
+# while it refreshes that PR, so the PR can't merge mid-refresh. This workflow
+# passes the status on every other pull request so a ruleset can require it.
+# Fork tokens can't write statuses under `pull_request`, so this runs under
+# `pull_request_target` and never checks out the pull request's code.
+on:
+  pull_request_target:
+
+permissions:
+  contents: read
+
+jobs:
+  unlock:
+    if: github.head_ref != 'publish-next-version'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      statuses: write
+    steps:
+      - uses: flipbook-labs/changewrite/publish-lock@v0.17.0
+        with:
+          locked: false
+          sha: ${{ github.event.pull_request.head.sha }}
+          url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
