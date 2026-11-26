@@ -65,6 +65,8 @@ jobs:
     if: github.event_name == 'pull_request' && github.repository != 'flipbook-labs/repo-template'
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      statuses: write
     steps:
       - uses: actions/checkout@v7
         with:
@@ -72,6 +74,15 @@ jobs:
           # exist. Full history guarantees it (the default depth-1 checkout does not).
           fetch-depth: 0
 
-      - uses: flipbook-labs/changewrite@v0.16.0
+      - uses: flipbook-labs/changewrite@v0.17.0
         with:
           require-entry: "true"
+
+      # Pass the `publish-lock` status on this pull request so a ruleset can
+      # require it. The Release workflow owns the status on the publish PR.
+      - uses: flipbook-labs/changewrite/publish-lock@v0.17.0
+        if: github.head_ref != 'publish-next-version'
+        with:
+          locked: false
+          sha: ${{ github.event.pull_request.head.sha }}
+          url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}

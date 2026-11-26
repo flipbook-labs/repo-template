@@ -15,6 +15,9 @@ on:
         default: ""
         required: false
 
+env:
+  RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
 jobs:
   release:
     # repo-template itself never releases, so this job skips there. In a
@@ -28,10 +31,22 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      statuses: write
+    # Pushes queue behind each other instead of cancelling, which the unlock's
+    # `base-sha` check relies on.
     concurrency:
       group: release-pr-${{ github.ref }}
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     steps:
+      # The publish PR can't merge while this run refreshes it. Locking in the
+      # same job as the unlock guarantees the unlock runs after it.
+      - name: Lock the Publish PR
+        if: github.event_name == 'push'
+        uses: flipbook-labs/changewrite/publish-lock@v0.17.0
+        with:
+          locked: true
+          url: ${{ env.RUN_URL }}
+
       # A publish PR opened with the default GITHUB_TOKEN doesn't trigger CI,
       # so Changewrite opens it as the Flipbook Backend App instead.
       - name: Generate App Token
@@ -47,8 +62,23 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
           ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || 'main' }}
 
-      - uses: flipbook-labs/changewrite@v0.16.0
+      # The unlock compares this commit against `main` to catch a push that
+      # landed after the publish PR was refreshed.
+      - name: Record the Refreshed Base Commit
+        id: base
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - uses: flipbook-labs/changewrite@v0.17.0
         with:
-          github-token: ${{ steps.app-token.outputs.token }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          pr-token: ${{ steps.app-token.outputs.token }}
           debug: ${{ github.event_name == 'pull_request' }}
           force-version: ${{ inputs.force-version || '' }}
+
+      - name: Unlock the Publish PR
+        if: github.event_name == 'push'
+        uses: flipbook-labs/changewrite/publish-lock@v0.17.0
+        with:
+          locked: false
+          base-sha: ${{ steps.base.outputs.sha }}
+          url: ${{ env.RUN_URL }}
