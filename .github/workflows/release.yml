@@ -32,8 +32,8 @@ jobs:
       contents: write
       pull-requests: write
       statuses: write
-    # Pushes queue behind each other instead of cancelling, which the unlock's
-    # `base-sha` check relies on.
+    # Pushes and manual runs queue behind each other instead of cancelling,
+    # which the unlock's `base-sha` check relies on.
     concurrency:
       group: release-pr-${{ github.ref }}
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}
@@ -41,7 +41,7 @@ jobs:
       # The publish PR can't merge while this run refreshes it. Locking in the
       # same job as the unlock guarantees the unlock runs after it.
       - name: Lock the Publish PR
-        if: github.event_name == 'push'
+        if: github.event_name != 'pull_request'
         uses: flipbook-labs/changewrite/publish-lock@v0.17.0
         with:
           locked: true
@@ -76,7 +76,7 @@ jobs:
           force-version: ${{ inputs.force-version || '' }}
 
       - name: Unlock the Publish PR
-        if: github.event_name == 'push'
+        if: github.event_name != 'pull_request'
         uses: flipbook-labs/changewrite/publish-lock@v0.17.0
         with:
           locked: false
